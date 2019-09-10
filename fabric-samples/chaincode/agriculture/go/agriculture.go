@@ -180,6 +180,11 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	return shim.Success(nil)
 }
 
+// Used to submit lots of transaction
+func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Response {
+	
+}
+
 func checkError(err error) {
 	if err != nil {
 		// panic(err)
@@ -193,3 +198,4 @@ func main() {
 	err := shim.Start(new(SmartContract))
 	checkError(err)
 }
+
