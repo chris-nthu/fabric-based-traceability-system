@@ -1,10 +1,14 @@
 push_to_github() {
     git add -A ;
-    git commit -m "$2" ;
+    git commit -m "Backup" ;
     git push ;
 }
 
 collect_files() {
+    sudo rm -r fabric/ ;
+    sudo rm -r fabric-samples/ ;
+    sudo rm -r agriculture_webapp/ ;
+
     sudo cp -r $HOME/go/src/github.com/hyperledger/fabric-samples $HOME/Github/fabric-based-traceability-system/ ;
     sudo cp -r $HOME/go/src/github.com/hyperledger/fabric $HOME/Github/fabric-based-traceability-system/ ;
     sudo cp -r $HOME/go/src/github.com/hyperledger/agriculture_webapp $HOME/Github/fabric-based-traceability-system/ ;
