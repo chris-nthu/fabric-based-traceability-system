@@ -24,6 +24,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"strconv"
+	"math/rand"
+	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
@@ -67,6 +69,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.changeProductLocation(APIstub, args)
 	} else if function == "initLedger" {
 		return s.initLedger(APIstub)
+	} else if function == "testSubmit" {
+		return s.testSubmit(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -131,7 +135,7 @@ func (s *SmartContract) queryAllProducts(APIstub shim.ChaincodeStubInterface) sc
 // Used to add a new transaction (product information) to blockchain ledger
 func (s *SmartContract) createProduct(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 4 {
-		return shim.Error("Incorrect number of arguments. Expecting 5")
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	var product = Product{GPS_Location: args[1], Temperature: args[2], Humidity: args[3]}
@@ -163,13 +167,13 @@ func (s *SmartContract) changeProductLocation(APIstub shim.ChaincodeStubInterfac
 // Used to initialize the blockchain ledger
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	products := []Product {
-		Product{GPS_Location: "(41.40338, 2.17403)", Temperature: "26.3", Humidity: "70.1%"},
-		Product{GPS_Location: "(53.22449, 3.79878)", Temperature: "27.8", Humidity: "32.3%"},
-		Product{GPS_Location: "(49.12345, 2.66534)", Temperature: "28.5", Humidity: "50.0%"},
+		Product{GPS_Location: "(41.40338, 2.17403)", Temperature: "26.3", Humidity: "70.1"},
+		Product{GPS_Location: "(53.22449, 3.79878)", Temperature: "27.8", Humidity: "32.3"},
+		Product{GPS_Location: "(49.12345, 2.66534)", Temperature: "28.5", Humidity: "50.0"},
 	}
 
 	i := 0
-	for i<len(products) {
+	for i < len(products) {
 		fmt.Println("i is ", i)
 		productAsBytes, _ := json.Marshal(products[i])
 		APIstub.PutState("No" + strconv.Itoa(i), productAsBytes)
@@ -181,8 +185,45 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 }
 
 // Used to submit lots of transaction
-func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Response {
-	
+func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	products := []Product
+}
+
+func randomProduceNumber(str string) float64 {
+	rand.Seed(time.Now().UnixNano())
+
+	switch str {
+		case "longitude":
+			num1 := float64(rand.Intn(360) - 180)
+			num2, err := strconv.ParseFloat(fmt.Sprintf("%.6f", rand.Float32()), 64)
+			checkError(err)
+
+			return num1 + num2
+			
+		case "latitude":
+			num1 := float64(rand.Intn(180) - 90)
+			num2, err := strconv.ParseFloat(fmt.Sprintf("%.6f", rand.Float32()), 64)
+			checkError(err)
+
+			return num1 + num2
+
+		case "temperature":
+			num1 := float64(rand.Intn(70) - 35)
+			num2, err := strconv.ParseFloat(fmt.Sprintf("%.1f", rand.Float32()), 64)
+			checkError(err)
+
+			return num1 + num2
+
+		case "humidity":
+			num1 := float64(rand.Intn(70) - 35)
+			num2, err := strconv.ParseFloat(fmt.Sprintf("%.1f", rand.Float32()), 64)
+			checkError(err)
+
+			return num1 + num2
+
+		default:
+			return 0
+	}
 }
 
 func checkError(err error) {

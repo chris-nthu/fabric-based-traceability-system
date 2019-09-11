@@ -1,6 +1,6 @@
 push_to_github() {
     git add -A ;
-    git commit -m $2 ;
+    git commit -m "$2" ;
     git push ;
 }
 
@@ -13,8 +13,13 @@ collect_files() {
     sudo rm -rf fabric-samples/.git* ;
 }
 
+upload_to_google_drive() {
+    ls -al
+}
+
 help_options() {
     printf "%s\n" "Allowed options:
+    [-g]       Compress the traceability project and upload to google drive.
     [-c]       Collect the files I want to backup to this folder.
     [-p]       Use git to push this project to github.
     "
@@ -22,6 +27,7 @@ help_options() {
 
 main() {
     case $1 in
+        -g) upload_to_google_drive ;;
         -c) collect_files ;;
         -p) push_to_github ;;
         *) help_options ;;
