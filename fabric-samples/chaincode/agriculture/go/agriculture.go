@@ -46,6 +46,12 @@ type Product struct {
 	Humidity	string	`json:"humidity"`
 }
 
+type Product2 struct {
+	GPS_Location	string	`json:"location"`
+	Temperature	float64	`json:"temperature"`
+	Humidity	string	`json:"humidity"`
+}
+
 /*
  * The Init method is called when the Smart Contract "agriculture" is instantiated by the blockchain network
  * Best practice is to have any Ledger initalization in separate function --see initLedger()
@@ -70,7 +76,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "initLedger" {
 		return s.initLedger(APIstub)
 	} else if function == "testSubmit" {
-		return s.testSubmit(APIstub, args)
+		return s.testSubmit(APIstub)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -185,8 +191,44 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 }
 
 // Used to submit lots of transaction
-func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	products := []Product
+func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+	var products [10]Product2
+	//var longitude_string string
+	//var latitude_string string
+	//var location_string string
+	var temperature_string string
+	//var humidity_string string
+	//var temperature_int int
+
+	i := 0
+	for i < len(products) {
+		//longitude_string = fmt.Sprintf("%.6f", randomProduceNumber("longitude"))
+		//latitude_string = fmt.Sprintf("%.6f", randomProduceNumber("latitude"))
+		//temperature_string = fmt.Sprintf("%.1f", randomProduceNumber("temperature"))
+		//humidity_string = fmt.Sprintf("%.1f", randomProduceNumber("humidity"))
+		//location_string = "(" + longitude_string + ", " + latitude_string + ")"
+		//temperature_int = rand.Intn(40)
+		temperature_string = fmt.Sprintf("%.1f", randomProduceNumber("temperature"))
+		temperature_float, err := strconv.ParseFloat(temperature_string, 64)
+		checkError(err)
+
+		products[i] = Product2{GPS_Location: "(140.114261, 63.777777)", Temperature: temperature_float, Humidity: "78.7"}
+		//fmt.Printf("%d\n", i)
+
+		i = i + 1
+	}
+
+	i = 0
+	for i < len(products) {
+		fmt.Println("i is ", i)
+		productAsBytes, _ := json.Marshal(products[i])
+		APIstub.PutState("No" + strconv.Itoa(i), productAsBytes)
+		fmt.Println("Added", products[i])
+		i = i + 1
+	}
+
+	return shim.Success(nil)
 }
 
 func randomProduceNumber(str string) float64 {
