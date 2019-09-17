@@ -34,3 +34,15 @@ $ git push
 opt/gopath/src/github.com/hyperledger/fabric/peer# ./../../../chaincode/agriculture/settings.sh
 ```
 
+3. Set channel name
+
+```bash
+opt/gopath/src/github.com/hyperledger/fabric/peer# export CHANNEL_NAME=mychannel
+```
+
+4. (Option) Test submit lots of transaction
+
+```bash
+opt/gopath/src/github.com/hyperledger/fabric/peer# ./../../../chaincode/agriculture/test/test.sh
+```
+

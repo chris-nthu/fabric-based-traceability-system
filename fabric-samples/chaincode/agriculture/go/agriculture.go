@@ -47,9 +47,9 @@ type Product struct {
 }
 
 type Product2 struct {
-	GPS_Location	string	`json:"location"`
-	Temperature	float64	`json:"temperature"`
-	Humidity	string	`json:"humidity"`
+	GPS_Location	int	`json:"location"`
+	Temperature	int	`json:"temperature"`
+	Humidity	int	`json:"humidity"`
 }
 
 /*
@@ -96,7 +96,7 @@ func (s *SmartContract) queryProduct(APIstub shim.ChaincodeStubInterface, args [
 // Used to query all the product information from blockchain ledger
 func (s *SmartContract) queryAllProducts(APIstub shim.ChaincodeStubInterface) sc.Response {
 	startKey := "No0"
-	endKey := "No999"
+	endKey := "No9999"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err!= nil {
@@ -193,13 +193,15 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 // Used to submit lots of transaction
 func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	var products [10]Product2
+	var products [9000]Product2
 	//var longitude_string string
 	//var latitude_string string
 	//var location_string string
-	var temperature_string string
+	//var temperature_string string
 	//var humidity_string string
-	//var temperature_int int
+	var temperature_int int
+	var location_int int
+	var humidity_int int
 
 	i := 0
 	for i < len(products) {
@@ -208,23 +210,21 @@ func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Respo
 		//temperature_string = fmt.Sprintf("%.1f", randomProduceNumber("temperature"))
 		//humidity_string = fmt.Sprintf("%.1f", randomProduceNumber("humidity"))
 		//location_string = "(" + longitude_string + ", " + latitude_string + ")"
-		//temperature_int = rand.Intn(40)
-		temperature_string = fmt.Sprintf("%.1f", randomProduceNumber("temperature"))
-		temperature_float, err := strconv.ParseFloat(temperature_string, 64)
-		checkError(err)
+		temperature_int = rand.Intn(80) - 40
+		location_int = rand.Intn(360) - 180
+		humidity_int = rand.Intn(100)
+		//temperature_string = fmt.Sprintf("%.1f", randomProduceNumber("temperature"))
+		//temperature_float, err := strconv.ParseFloat(temperature_string, 64)
+		//checkError(err)
 
-		products[i] = Product2{GPS_Location: "(140.114261, 63.777777)", Temperature: temperature_float, Humidity: "78.7"}
+		products[i] = Product2{GPS_Location: location_int, Temperature: temperature_int, Humidity: humidity_int}
 		//fmt.Printf("%d\n", i)
 
-		i = i + 1
-	}
-
-	i = 0
-	for i < len(products) {
 		fmt.Println("i is ", i)
 		productAsBytes, _ := json.Marshal(products[i])
 		APIstub.PutState("No" + strconv.Itoa(i), productAsBytes)
 		fmt.Println("Added", products[i])
+
 		i = i + 1
 	}
 
