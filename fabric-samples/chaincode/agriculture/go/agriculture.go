@@ -96,7 +96,7 @@ func (s *SmartContract) queryProduct(APIstub shim.ChaincodeStubInterface, args [
 // Used to query all the product information from blockchain ledger
 func (s *SmartContract) queryAllProducts(APIstub shim.ChaincodeStubInterface) sc.Response {
 	startKey := "No0"
-	endKey := "No9999"
+	endKey := "No100000"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err!= nil {
