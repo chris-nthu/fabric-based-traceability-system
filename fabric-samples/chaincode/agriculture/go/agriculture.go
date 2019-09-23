@@ -24,8 +24,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"strconv"
-	"math/rand"
-	"time"
+	_ "math/rand"
+	_ "time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
@@ -75,9 +75,9 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.changeProductLocation(APIstub, args)
 	} else if function == "initLedger" {
 		return s.initLedger(APIstub)
-	} else if function == "testSubmit" {
+	} /*else if function == "testSubmit" {
 		return s.testSubmit(APIstub)
-	}
+	}*/
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -96,7 +96,7 @@ func (s *SmartContract) queryProduct(APIstub shim.ChaincodeStubInterface, args [
 // Used to query all the product information from blockchain ledger
 func (s *SmartContract) queryAllProducts(APIstub shim.ChaincodeStubInterface) sc.Response {
 	startKey := "No0"
-	endKey := "No100000"
+	endKey := "No5000"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err!= nil {
@@ -190,6 +190,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	return shim.Success(nil)
 }
 
+/*
 // Used to submit lots of transaction
 func (s *SmartContract) testSubmit(APIstub shim.ChaincodeStubInterface) sc.Response {
 
@@ -267,6 +268,7 @@ func randomProduceNumber(str string) float64 {
 			return 0
 	}
 }
+*/
 
 func checkError(err error) {
 	if err != nil {
