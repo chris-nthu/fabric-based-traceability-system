@@ -351,7 +351,7 @@ func fetchTransactionInfo(tdata []byte, blockInfo *blockInfo){
 					// fmt.Println(f)
 
 					stake := strings.FieldsFunc(ref, f)
-					// fmt.Println(stake)
+					fmt.Println(stake)
 
 					if initialized == false {
 						configure = false
@@ -386,6 +386,23 @@ func fetchTransactionInfo(tdata []byte, blockInfo *blockInfo){
 							blockInfo.info.paynum = paynum
 						}
 						*/
+					}else if stake[3] == "createProduct" {
+						blockInfo.info.chaincodeid  = stake[2]
+						blockInfo.info.action       = stake[3]
+						blockInfo.info.key          = stake[4]
+
+						blockInfo.info.GPS_Location = "(" + stake[5] + "." + stake[6] + ", " + stake[7] + "." + stake[8] + ")"
+
+						temperature_string := stake[9] + "." + stake[10]
+						humidity_string     := stake[11] + "." + stake[12]
+
+						temperature_float, err := strconv.ParseFloat(temperature_string, 64)
+						checkErr(err)
+						humidity_float, err := strconv.ParseFloat(humidity_string, 64)
+						checkErr(err)
+
+						blockInfo.info.temperature = temperature_float
+						blockInfo.info.humidity    = humidity_float
 					} else if stake[4] == "changeProductLocation" {
 						blockInfo.info.chaincodeid = stake[2]
 						blockInfo.info.action = stake[4]
