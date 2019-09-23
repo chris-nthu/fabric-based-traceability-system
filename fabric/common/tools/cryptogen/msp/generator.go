@@ -24,16 +24,21 @@ const (
 	CLIENT = iota
 	ORDERER
 	PEER
+	ADMIN
 )
 
 const (
-	CLIENTOU = "client"
-	PEEROU   = "peer"
+	CLIENTOU  = "client"
+	PEEROU    = "peer"
+	ADMINOU   = "admin"
+	ORDEREROU = "orderer"
 )
 
 var nodeOUMap = map[int]string{
-	CLIENT: CLIENTOU,
-	PEER:   PEEROU,
+	CLIENT:  CLIENTOU,
+	PEER:    PEEROU,
+	ADMIN:   ADMINOU,
+	ORDERER: ORDEREROU,
 }
 
 func GenerateLocalMSP(baseDir, name string, sans []string, signCA *ca.CA,
@@ -95,8 +100,9 @@ func GenerateLocalMSP(baseDir, name string, sans []string, signCA *ca.CA,
 	}
 
 	// generate config.yaml if required
-	if nodeOUs && nodeType == PEER {
-		exportConfig(mspDir, "cacerts/"+x509Filename(signCA.Name), true)
+	if nodeOUs {
+
+		exportConfig(mspDir, filepath.Join("cacerts", x509Filename(signCA.Name)), true)
 	}
 
 	// the signing identity goes into admincerts.
@@ -106,9 +112,11 @@ func GenerateLocalMSP(baseDir, name string, sans []string, signCA *ca.CA,
 	// cleared up anyway by copyAdminCert, but
 	// we leave a valid admin for now for the sake
 	// of unit tests
-	err = x509Export(filepath.Join(mspDir, "admincerts", x509Filename(name)), cert)
-	if err != nil {
-		return err
+	if !nodeOUs {
+		err = x509Export(filepath.Join(mspDir, "admincerts", x509Filename(name)), cert)
+		if err != nil {
+			return err
+		}
 	}
 
 	/*
@@ -183,6 +191,10 @@ func GenerateVerifyingMSP(baseDir string, signCA *ca.CA, tlsCA *ca.CA, nodeOUs b
 	// cleared up anyway by copyAdminCert, but
 	// we leave a valid admin for now for the sake
 	// of unit tests
+	if nodeOUs {
+		return nil
+	}
+
 	factory.InitFactories(nil)
 	bcsp := factory.GetDefault()
 	priv, err := bcsp.KeyGen(&bccsp.ECDSAP256KeyGenOpts{Temporary: true})
@@ -195,7 +207,6 @@ func GenerateVerifyingMSP(baseDir string, signCA *ca.CA, tlsCA *ca.CA, nodeOUs b
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -259,6 +270,14 @@ func exportConfig(mspDir, caFile string, enable bool) error {
 			PeerOUIdentifier: &fabricmsp.OrganizationalUnitIdentifiersConfiguration{
 				Certificate:                  caFile,
 				OrganizationalUnitIdentifier: PEEROU,
+			},
+			AdminOUIdentifier: &fabricmsp.OrganizationalUnitIdentifiersConfiguration{
+				Certificate:                  caFile,
+				OrganizationalUnitIdentifier: ADMINOU,
+			},
+			OrdererOUIdentifier: &fabricmsp.OrganizationalUnitIdentifiersConfiguration{
+				Certificate:                  caFile,
+				OrganizationalUnitIdentifier: ORDEREROU,
 			},
 		},
 	}

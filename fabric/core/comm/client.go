@@ -107,6 +107,13 @@ func (client *GRPCClient) parseSecureOptions(opts *SecureOptions) error {
 				"are required when using mutual TLS")
 		}
 	}
+
+	if opts.TimeShift > 0 {
+		client.tlsConfig.Time = func() time.Time {
+			return time.Now().Add((-1) * opts.TimeShift)
+		}
+	}
+
 	return nil
 }
 
@@ -174,30 +181,34 @@ func (client *GRPCClient) NewConnection(address string, serverNameOverride strin
 	// SetServerRootCAs / SetMaxRecvMsgSize / SetMaxSendMsgSize
 	//  to take effect on a per connection basis
 	if client.tlsConfig != nil {
-		client.tlsConfig.ServerName = serverNameOverride
-		dialOpts = append(dialOpts,
-			grpc.WithTransportCredentials(
-				credentials.NewTLS(client.tlsConfig)))
+			client.tlsConfig.ServerName = serverNameOverride
+			dialOpts = append(dialOpts,
+					grpc.WithTransportCredentials(
+							credentials.NewTLS(client.tlsConfig)))
 	} else {
-		dialOpts = append(dialOpts, grpc.WithInsecure())
+			dialOpts = append(dialOpts, grpc.WithInsecure())
 	}
 	dialOpts = append(dialOpts, grpc.WithDefaultCallOptions(
-		grpc.MaxCallRecvMsgSize(client.maxRecvMsgSize),
-		grpc.MaxCallSendMsgSize(client.maxSendMsgSize)))
+			grpc.MaxCallRecvMsgSize(client.maxRecvMsgSize),
+			grpc.MaxCallSendMsgSize(client.maxSendMsgSize)))
 
 	ctx, cancel := context.WithTimeout(context.Background(), client.timeout)
 	_ = ctx
+	
 	defer cancel()
+	
 	// conn, err := grpc.DialContext(ctx, address, dialOpts...)
+
 	certificate := "/home/chris/go/src/github.com/hyperledger/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt"
 	creds, errMsg := credentials.NewClientTLSFromFile(certificate, "")
+	
 	if errMsg != nil {
-		return nil, fmt.Errorf("Failed to load tls certificate when getting credentials : %s", errMsg)
+			return nil, fmt.Errorf("Failed to load tls certificate when getting credentials : %s", errMsg)
 	}
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(creds))
 	if err != nil {
-		return nil, errors.WithMessage(errors.WithStack(err),
-			"failed to create new connection")
+			return nil, errors.WithMessage(errors.WithStack(err),
+					"failed to create new connection")
 	}
 	return conn, nil
 }

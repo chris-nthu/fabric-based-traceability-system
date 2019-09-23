@@ -1,7 +1,7 @@
 What's new in v1.4
 ==================
 
-Hyperledger Fabric's First long term support release
+Hyperledger Fabric's first long term support release
 ----------------------------------------------------
 
 Hyperledger Fabric has matured since the initial v1.0 release, and so has the
@@ -79,11 +79,13 @@ Improved programming model for developing applications
 ------------------------------------------------------
 
 Writing decentralized applications has just gotten easier. Programming model
-improvements in the Node.js SDK and Node.js chaincode makes the development
+improvements for smart contracts (chaincode) and the SDKs makes the development
 of decentralized applications more intuitive, allowing you to focus
-on your application logic. The existing npm packages are still available for
-use, while the new npm packages provide a layer of abstraction to improve
-developer productivity and ease of use.
+on your application logic. These programming model enhancements are available
+for Node.js (as of Fabric v1.4.0) and Java (as of Fabric v1.4.2). The existing
+SDKs are still available for use and existing applications will continue to work.
+It is recommended that developers migrate to the new SDKs, which provide a layer
+of abstraction to improve developer productivity and ease of use.
 
 New documentation helps you
 understand the various aspects of creating a decentralized application for
@@ -124,13 +126,13 @@ New tutorials
 -------------
 
 * :doc:`write_first_app`:
-  This tutorial has been updated to leverage the improved Node.js SDK and chaincode
-  programming model. The tutorial has both JavaScript and Typescript examples of
-  the client application and chaincode.
+  This tutorial has been updated to leverage the improved smart contract (chaincode)
+  and SDK programming model. The tutorial has Java, JavaScript, and Typescript examples
+  of the client application and chaincode.
 
 * :doc:`tutorial/commercial_paper`
   As mentioned above, this is the tutorial that accompanies the new Developing
-  Applications documentation.
+  Applications documentation. This contains both Java and JavaScript code.
 
 * :doc:`upgrade_to_newest_version`:
   Leverages the network from :doc:`build_network` to demonstrate an upgrade from
@@ -153,6 +155,15 @@ Private data enhancements
     chaincode based on the client organization collection membership without having
     to write specific chaincode logic.
 
+Node OU support
+---------------
+
+* :doc:`msp`:
+  Starting with v1.4.3, node OUs are now supported for admin and orderer identity
+  classifications (extending the existing Node OU support for clients and peers).
+  These "organizational units" allow organizations to further classify identities
+  into admins and orderers based on the OUs of their x509 certificates.
+
 Release notes
 =============
 
@@ -162,9 +173,11 @@ with a link to the full release change log.
 * `Fabric v1.4.0 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.0>`_.
 * `Fabric v1.4.1 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.1>`_.
 * `Fabric v1.4.2 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.2>`_.
+* `Fabric v1.4.3 release notes <https://github.com/hyperledger/fabric/releases/tag/v1.4.3>`_.
 * `Fabric CA v1.4.0 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.0>`_.
 * `Fabric CA v1.4.1 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.1>`_.
 * `Fabric CA v1.4.2 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.2>`_.
+* `Fabric CA v1.4.3 release notes <https://github.com/hyperledger/fabric-ca/releases/tag/v1.4.3>`_.
 
 .. Licensed under Creative Commons Attribution 4.0 International License
    https://creativecommons.org/licenses/by/4.0/

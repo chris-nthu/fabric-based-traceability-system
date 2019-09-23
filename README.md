@@ -46,3 +46,10 @@ opt/gopath/src/github.com/hyperledger/fabric/peer# export CHANNEL_NAME=mychannel
 opt/gopath/src/github.com/hyperledger/fabric/peer# ./../../../chaincode/agriculture/test/test.sh
 ```
 
+5. Execute eventcilent to fetch transaction and store into PostgreSQL
+
+```bash
+/home/user/go/src/github.com/hyperledger/fabric/examples/events/eventsclient$ go build
+
+/home/user/go/src/github.com/hyperledger/fabric/examples/events/eventsclient$ sudo FABRIC_CFG_PATH=$GOPATH/src/github.com/hyperledger/fabric-samples/config ./eventsclient
+```

@@ -50,7 +50,7 @@ Organizations:{{ range .PeerOrgs }}
 
 Channel: &ChannelDefaults
   Capabilities:
-    V1_4_2: true
+    V1_4_3: true
   Policies:
     Readers:
       Type: ImplicitMeta
@@ -68,9 +68,6 @@ Profiles:{{ range .Profiles }}
     {{- if .Orderers }}
     Orderer:
       OrdererType: {{ $w.Consensus.Type }}
-      Addresses:{{ range .Orderers }}{{ with $w.Orderer . }}
-      - 127.0.0.1:{{ $w.OrdererPort . "Listen" }}
-      {{- end }}{{ end }}
       BatchTimeout: 1s
       BatchSize:
         MaxMessageCount: 1
