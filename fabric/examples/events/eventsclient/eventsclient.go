@@ -174,6 +174,12 @@ func (r *eventsClient) readEventsStream() {
 
 				for _, test := range t.Block.Data.Data {
 					fetchTransactionInfo(test, &blockInfo)
+					
+					_ = storeBlockInfoToPostgre(db, &blockInfo)
+
+					if blockInfo.info.action != "init" {
+						storeProductInfoToPostgre(db, &blockInfo)
+					}
 				}
 
 				if configure == true {
@@ -241,11 +247,13 @@ func (r *eventsClient) readEventsStream() {
 					fmt.Println("----------------------------------------------------------------------------------------")
 					fmt.Println()
 
+					/*
 					err := storeBlockInfoToPostgre(db, &blockInfo)
 
 					if err == nil && blockInfo.info.action != "init" {
 						storeProductInfoToPostgre(db, &blockInfo)
 					}
+					*/
 				}
 			} else {
 				logger.Info("Received block: ", t.Block.Header.Number)
