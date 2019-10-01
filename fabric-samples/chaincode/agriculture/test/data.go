@@ -61,7 +61,7 @@ func checkError(err error) {
 }
 
 func main() {
-	var products [1000]Product
+	var products [10000]Product
 	var key_string string
 	var longitude_string string
 	var latitude_string string
